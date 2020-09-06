@@ -13,7 +13,10 @@ import (
 	"context"
 	"encoding/xml"
 	"time"
+	"math/big"
+
 	"github.com/hooklift/gowsdl/soap"
+	xsd "github.com/hooklift/gowsdl/xml"
 
 	{{/*range .Imports*/}}
 		{{/*.*/}}
@@ -23,13 +26,6 @@ import (
 // against "unused imports"
 var _ time.Time
 var _ xml.Name
-
-type AnyType struct {
-	InnerXML string ` + "`" + `xml:",innerxml"` + "`" + `
-}
-
-type AnyURI string
-
-type NCName string
+var _ xsd.NCName
 
 `

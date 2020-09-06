@@ -49,7 +49,6 @@ package main
 import (
 	"bytes"
 	"flag"
-	"fmt"
 	"go/format"
 	"log"
 	"os"
@@ -76,25 +75,26 @@ func init() {
 }
 
 func main() {
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options] myservice.wsdl\n", os.Args[0])
-		flag.PrintDefaults()
-	}
+	//flag.Usage = func() {
+	//	fmt.Fprintf(os.Stderr, "Usage: %s [options] myservice.wsdl\n", os.Args[0])
+	//	flag.PrintDefaults()
+	//}
+	//
+	//flag.Parse()
+	//
+	////Show app version
+	//if *vers {
+	//	log.Println(Version)
+	//	os.Exit(0)
+	//}
+	//
+	//if len(os.Args) < 2 {
+	//	flag.Usage()
+	//	os.Exit(0)
+	//}
 
-	flag.Parse()
-
-	// Show app version
-	if *vers {
-		log.Println(Version)
-		os.Exit(0)
-	}
-
-	if len(os.Args) < 2 {
-		flag.Usage()
-		os.Exit(0)
-	}
-
-	wsdlPath := os.Args[len(os.Args)-1]
+	//wsdlPath := os.Args[len(os.Args)-1]
+	wsdlPath := "./devicemgmt.wsdl"
 
 	if *outFile == wsdlPath {
 		log.Fatalln("Output file cannot be the same WSDL file")
