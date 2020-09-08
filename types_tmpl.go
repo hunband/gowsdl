@@ -15,19 +15,32 @@ var typesTmpl = `
 	{{else if .Union.SimpleType}}
 		type {{$type}} string
 	{{else if .Restriction.Base}}
-		type {{$type}} {{toGoType .Restriction.Base}}
+		{{if not .Restriction.Enumeration}}
+			type {{$type}} {{toGoType .Restriction.Base}}
+		{{end}}
     {{else}}
 		type {{$type}} interface{}
 	{{end}}
 
 	{{if .Restriction.Enumeration}}
-	const (
+	{{$base := toGoType .Restriction.Base}}
+	type {{$type}} struct {
 		{{with .Restriction}}
 			{{range .Enumeration}}
 				{{if .Doc}} {{.Doc | comment}} {{end}}
-				{{$type}}{{$value := replaceReservedWords .Value}}{{$value | makePublic}} {{$type}} = "{{goString .Value}}" {{end}}
+				{{$type | makePrivate}}{{$value := replaceReservedWords .Value}}{{$value | makePublic}} {{$base}}
+			{{end}}
 		{{end}}
-	)
+	}
+
+	{{with .Restriction}}
+		{{range .Enumeration}}
+			func (enum *{{$type}} ) {{$type}}{{$value := replaceReservedWords .Value}}{{$value | makePublic}}() {{$base}} {
+				return enum.{{$type | makePrivate}}{{$value := replaceReservedWords .Value}}{{$value | makePublic}}
+			}
+		{{end}}
+	{{end}}
+
 	{{end}}
 {{end}}
 
@@ -150,7 +163,7 @@ var typesTmpl = `
 				{{if ne $name $typ}}
 					XMLName xml.Name ` + "`xml:\"{{$targetNamespace}} {{$typ}}\"`" + `
 				{{end}}
-				
+
 				{{if ne .ComplexContent.Extension.Base ""}}
 					{{template "ComplexContent" .ComplexContent}}
 				{{else if ne .SimpleContent.Extension.Base ""}}
@@ -164,7 +177,7 @@ var typesTmpl = `
 					{{template "Attributes" .Attributes}}
 				{{end}}
 			}
-		{{end}}	
+		{{end}}
 	{{end}}
 {{end}}
 `
